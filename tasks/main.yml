@@ -1,0 +1,30 @@
+---
+- apt: update_cache=yes upgrade=yes
+  sudo: yes
+  name: apt update
+- apt: name={{ item }} state=latest
+  sudo: yes
+  with_items:
+    - nodejs
+    - npm
+    - nodejs-legacy
+- git: repo="https://github.com/timothyb89/stackviz.git" dest="src/stackviz"
+  name: git clone
+- pip: state=latest name={{ item }}
+  name: pip setup
+  sudo: yes
+  with_items:
+    - pip
+    - virtualenv
+    - setuptools
+    - pyOpenSSL
+    - ndg-httpsclient
+    - pyasn
+    - tox
+- npm: name="bower" global="yes"
+  name: install bower
+  sudo: yes
+- command: bower install chdir="~/src/stackviz"
+  name: bower install things
+- pip: requirements="~/src/stackviz/requirements.txt" virtualenv"=~/venv/stackviz"
+  name: requirements
